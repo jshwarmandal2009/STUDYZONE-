@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyZone | WBBSE Class 7–10</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans Bengali",sans-serif;background:#f4f7fb;color:#172033}
+header{background:linear-gradient(135deg,#3157d5,#6937c9);color:white;padding:18px 16px;position:sticky;top:0;z-index:10}
+.nav{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font-size:22px;font-weight:800}.nav button{border:0;background:#ffffff22;color:white;padding:9px 14px;border-radius:10px;cursor:pointer}
+.container{max-width:1100px;margin:auto;padding:22px 16px}
+.hero{background:white;border-radius:22px;padding:28px 20px;box-shadow:0 5px 20px #0000000b;text-align:center}
+.hero h1{margin:0 0 10px;font-size:30px}.hero p{margin:0;color:#667085}
+.search{width:100%;padding:14px 16px;border:1px solid #d9deea;border-radius:13px;margin-top:18px;font-size:16px}
+h2{margin:28px 0 14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.card{background:white;border:0;border-radius:17px;padding:20px;box-shadow:0 4px 16px #0000000b;cursor:pointer;text-align:left;transition:.2s}
+.card:hover{transform:translateY(-2px)}.class-card{text-align:center;font-size:21px;font-weight:bold}
+.subject-card strong{display:block;font-size:18px;margin-bottom:7px}.subject-card span{color:#7a8496;font-size:13px}
+.hidden{display:none}.back{border:0;background:#e9edff;color:#3157d5;padding:10px 14px;border-radius:10px;cursor:pointer;margin-bottom:15px}
+.panel{background:white;border-radius:18px;padding:20px;box-shadow:0 4px 16px #0000000b}
+.chapter{padding:15px;border:1px solid #e5e8ef;border-radius:13px;margin:10px 0;cursor:pointer}
+.chapter b{font-size:16px}.chapter small{display:block;color:#7b8495;margin-top:5px}
+.content-box{background:#f8f9fd;border-left:4px solid #3157d5;padding:15px;border-radius:10px;margin:12px 0;line-height:1.65}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.tab{border:0;padding:10px 13px;border-radius:10px;background:#edf0f7;cursor:pointer}.tab.active{background:#3157d5;color:white}
+.q{padding:13px 0;border-bottom:1px solid #e7e9ef}.ans{color:#16834b;font-weight:bold;margin-top:6px}
+footer{text-align:center;color:#7a8496;padding:30px 10px}
+@media(max-width:500px){.hero h1{font-size:25px}.container{padding:16px 12px}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="logo">📚 StudyZone</div><div><button onclick="goHome()">Home</button></div></div></header>
+
+<main class="container">
+<section id="home">
+<div class="hero">
+<h1>Learn Smart, Score Better 🎓</h1>
+<p>WBBSE Class 7–10-এর পড়াশোনা এক জায়গায়</p>
+<input id="search" class="search" placeholder="🔍 বিষয় বা অধ্যায় খুঁজুন..." oninput="searchAll()">
+</div>
+<h2>🎒 Class নির্বাচন করুন</h2>
+<div class="grid" id="classes"></div>
+</section>
+
+<section id="subjects" class="hidden">
+<button class="back" onclick="goHome()">← Back</button>
+<div class="panel"><h2 id="classTitle"></h2><div class="grid" id="subjectGrid"></div></div>
+</section>
+
+<section id="chapters" class="hidden">
+<button class="back" onclick="showSubjects()">← বিষয়গুলিতে ফিরে যান</button>
+<div class="panel"><h2 id="subjectTitle"></h2><div id="chapterList"></div></div>
+</section>
+
+<section id="lesson" class="hidden">
+<button class="back" onclick="showChapters()">← অধ্যায়গুলিতে ফিরে যান</button>
+<div class="panel"><h2 id="chapterTitle"></h2>
+<div class="tabs">
+<button class="tab active" onclick="showTab('notes',this)">📝 Notes</button>
+<button class="tab" onclick="showTab('mcq',this)">❓ MCQ</button>
+<button class="tab" onclick="showTab('important',this)">🔴 Important Questions</button>
+</div>
+<div id="tabContent"></div>
+</div>
+</section>
+</main>
+<footer>📚 StudyZone • WBBSE Class 7–10 • Educational Demo</footer>
+
+<script>
+const data={
+7:{
+"বাংলা":["গদ্য","পদ্য","ব্যাকরণ","রচনা"],
+"English":["Grammar","Prose","Poetry","Writing"],
+"গণিত":["পাটিগণিত","বীজগণিত","জ্যামিতি","পরিমিতি"],
+"ভূগোল":["ভূমিরূপ ও প্রাকৃতিক প্রক্রিয়া","আবহাওয়া ও জলবায়ু","জলসম্পদ","মানচিত্র"],
+"বিজ্ঞান":["পদার্থ ও তার ধর্ম","জীবজগৎ","শক্তি","পরিবেশ"],
+"ইতিহাস":["প্রাচীন ভারত","মধ্যযুগের ভারত","আধুনিক ভারতের সূচনা","ঐতিহাসিক স্থান ও ঘটনা"]},
+8:{
+"বাংলা":["গদ্য","পদ্য","ব্যাকরণ","রচনা"],
+"English":["Grammar","Prose","Poetry","Writing"],
+"গণিত":["পাটিগণিত","বীজগণিত","জ্যামিতি","পরিমিতি"],
+"ভূগোল":["ভূমিরূপ গঠনকারী প্রক্রিয়া","জলবায়ু","জলসম্পদ","জনসংখ্যা ও বসতি"],
+"বিজ্ঞান":["পদার্থ","জীবন ও জীবজগৎ","শক্তি","পরিবেশ"],
+"ইতিহাস":["প্রাচীন ও মধ্যযুগীয় ভারত","ঔপনিবেশিক যুগ","বাংলার ইতিহাস","জাতীয়তাবাদ"]},
+9:{
+"বাংলা":["গদ্য","পদ্য","কারক ও বিভক্তি","সমাস","বাক্য ও বাচ্য","রচনা"],
+"English":["Grammar","Prose","Poetry","Writing"],
+"গণিত":["বাস্তব সংখ্যা","বীজগণিত","জ্যামিতি","পরিমিতি","পরিসংখ্যান"],
+"ভূগোল":["ভূমিরূপ গঠনকারী প্রক্রিয়া","বায়ুমণ্ডল","জলমণ্ডল","ভারতের ভূগোল","মানচিত্র"],
+"জীবন বিজ্ঞান":["কোষ","জীবন প্রক্রিয়া","জীববৈচিত্র্য","পরিবেশ"],
+"ভৌত বিজ্ঞান":["ভৌত রাশি ও পরিমাপ","গতি","বল ও শক্তি","পদার্থের গঠন"],
+"ইতিহাস":["ইউরোপে পরিবর্তন","ভারতে ঔপনিবেশিক শাসন","বাংলার ইতিহাস","জাতীয়তাবাদ"]},
+10:{
+"বাংলা":["গদ্য","পদ্য","কারক ও বিভক্তি","সমাস","বাক্য ও বাচ্য","রচনা"],
+"English":["Grammar","Prose","Poetry","Writing"],
+"গণিত":["বীজগণিত","জ্যামিতি","ত্রিকোণমিতি","পরিমিতি","পরিসংখ্যান"],
+"ভূগোল":["বহির্জাত প্রক্রিয়া ও ভূমিরূপ","বায়ুমণ্ডল","জলমণ্ডল","ভারতের ভূগোল","মানচিত্র"],
+"জীবন বিজ্ঞান":["জীবন ও তার বৈচিত্র্য","জীবন প্রক্রিয়া","বংশগতি ও বিবর্তন","পরিবেশ"],
+"ভৌত বিজ্ঞান":["গ্যাসের আচরণ","রাসায়নিক গণনা","তাপ","আলো","বিদ্যুৎ","পরমাণুর নিউক্লিয়াস"],
+"ইতিহাস":["সংঘবদ্ধতার যুগ","সংস্কার ও প্রতিরোধ","স্বাধীনতা আন্দোলন","স্বাধীনতা ও পরবর্তী ভারত"]}
+};
+
+let currentClass=7,currentSubject="",currentChapter="";
+
+function renderClasses(){
+const el=document.getElementById("classes");el.innerHTML="";
+[7,8,9,10].forEach(c=>{let d=document.createElement("button");d.className="card class-card";d.innerHTML="Class "+c+"<br><small>WBBSE</small>";d.onclick=()=>showSubjectsFor(c);el.appendChild(d)})
+}
+function hideAll(){["home","subjects","chapters","lesson"].forEach(x=>document.getElementById(x).classList.add("hidden"))}
+function showSubjectsFor(c){currentClass=c;hideAll();document.getElementById("subjects").classList.remove("hidden");document.getElementById("classTitle").textContent="Class "+c+" — বিষয় নির্বাচন করুন";let g=document.getElementById("subjectGrid");g.innerHTML="";
+Object.keys(data[c]).forEach(s=>{let b=document.createElement("button");b.className="card subject-card";b.innerHTML="<strong>📖 "+s+"</strong><span>"+data[c][s].length+"টি অধ্যায়</span>";b.onclick=()=>showChaptersFor(s);g.appendChild(b)})}
+function showSubjects(){showSubjectsFor(currentClass)}
+function showChaptersFor(s){currentSubject=s;hideAll();document.getElementById("chapters").classList.remove("hidden");document.getElementById("subjectTitle").textContent="Class "+currentClass+" • "+s;let list=document.getElementById("chapterList");list.innerHTML="";
+data[currentClass][s].forEach((ch,i)=>{let d=document.createElement("div");d.className="chapter";d.innerHTML="<b>📘 "+(i+1)+". "+ch+"</b><small>Notes • MCQ • Important Questions</small>";d.onclick=()=>showLesson(ch);list.appendChild(d)})}
+function showChapters(){showChaptersFor(currentSubject)}
+function showLesson(ch){currentChapter=ch;hideAll();document.getElementById("lesson").classList.remove("hidden");document.getElementById("chapterTitle").textContent=currentSubject+" — "+ch;showTab("notes",document.querySelector(".tab"))}
+function showTab(type,btn){document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");let c=document.getElementById("tabContent");
+if(type==="notes")c.innerHTML=`<div class="content-box"><b>📌 অধ্যায়ের সংক্ষিপ্ত নোট</b><br>এই অংশে ${currentChapter}-এর পরীক্ষার উপযোগী সংজ্ঞা, মূল বিষয় ও গুরুত্বপূর্ণ পয়েন্ট যোগ করা যাবে।</div><div class="content-box"><b>💡 পড়ার টিপস</b><br>প্রথমে মূল ধারণা বুঝে নাও, তারপর সংজ্ঞা ও উদাহরণ অনুশীলন করো।</div>`;
+if(type==="mcq")c.innerHTML=`<div class="q"><b>1. ${currentChapter} অধ্যায়ের মূল বিষয় কী?</b><div>ক) বিষয় A &nbsp; খ) বিষয় B &nbsp; গ) বিষয় C &nbsp; ঘ) বিষয় D</div><div class="ans">উত্তর: খ) বিষয় B</div></div><div class="q"><b>2. পরীক্ষার আগে কোনটি করা সবচেয়ে ভালো?</b><div>ক) শুধু পড়া &nbsp; খ) শুধু লেখা &nbsp; গ) পড়া ও অনুশীলন &nbsp; ঘ) কিছুই নয়</div><div class="ans">উত্তর: গ) পড়া ও অনুশীলন</div></div>`;
+if(type==="important")c.innerHTML=`<div class="q"><b>🔴 ১. ${currentChapter} সংক্ষেপে ব্যাখ্যা করো।</b></div><div class="q"><b>🔴 ২. ${currentChapter}-এর গুরুত্বপূর্ণ বৈশিষ্ট্যগুলি লেখো।</b></div><div class="q"><b>🟠 ৩. উপযুক্ত উদাহরণসহ আলোচনা করো।</b></div>`;
+}
+function goHome(){hideAll();document.getElementById("home").classList.remove("hidden");document.getElementById("search").value=""}
+function searchAll(){let q=document.getElementById("search").value.trim().toLowerCase();if(!q){renderClasses();return}hideAll();document.getElementById("home").classList.remove("hidden");let el=document.getElementById("classes");el.innerHTML="";let found=[];
+for(let c of [7,8,9,10])for(let s of Object.keys(data[c]))for(let ch of data[c][s])if((s+" "+ch).toLowerCase().includes(q)&&!found.some(x=>x[0]===c)){found.push([c,s,ch])}
+if(found.length){found.forEach(x=>{let b=document.createElement("button");b.className="card class-card";b.innerHTML="Class "+x[0]+"<br><small>"+x[1]+" • "+x[2]+"</small>";b.onclick=()=>{showChaptersFor(x[1])};el.appendChild(b)})}else el.innerHTML="<div class='panel'>কিছু পাওয়া যায়নি। অন্য শব্দ দিয়ে চেষ্টা করুন।</div>"}
+renderClasses();
+</script>
+</body>
+</html>
